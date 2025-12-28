@@ -12,8 +12,8 @@ const Showcase: React.FC = () => {
             <div 
               key={idx} 
               // 使用 aspect-[9/16] 確保 9:16 的圖片能完整顯示
-              // 寬度設定為 w-56 (移動端) 與 w-80 (桌面端)，維持縮小後的精緻感
-              className="relative w-56 md:w-80 aspect-[9/16] flex-shrink-0 group overflow-hidden rounded-3xl border border-slate-800/50 shadow-2xl shadow-purple-500/5"
+              // 寬度再縮小 20%：w-56 -> w-44 (176px), md:w-80 -> w-64 (256px)
+              className="relative w-44 md:w-64 aspect-[9/16] flex-shrink-0 group overflow-hidden rounded-3xl border border-slate-800/50 shadow-2xl shadow-purple-500/5"
             >
               <img 
                 src={img.url} 
@@ -22,7 +22,7 @@ const Showcase: React.FC = () => {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
               <div className="absolute bottom-6 left-6">
-                <p className="text-white text-xl font-black tracking-tight mb-1">{img.alt}</p>
+                <p className="text-white text-lg font-black tracking-tight mb-1">{img.alt}</p>
                 <p className="text-slate-400 text-[10px] italic font-light">"Powered by Ivan AI Engine"</p>
               </div>
             </div>

@@ -14,7 +14,7 @@ const Footer: React.FC = () => {
               onClick={() => setShowPrivacy(true)}
               className="hover:text-white transition-all hover:scale-110 active:scale-95"
             >
-              隱私條款
+              重要條款
             </button>
           </div>
 
@@ -25,7 +25,7 @@ const Footer: React.FC = () => {
         </div>
       </div>
 
-      {/* Privacy Modal */}
+      {/* Privacy Modal (Important Terms Modal) */}
       {showPrivacy && (
         <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setShowPrivacy(false)} />
