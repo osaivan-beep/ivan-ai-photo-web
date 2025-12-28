@@ -110,12 +110,12 @@ export const PLANS: PricePlan[] = [
 ];
 
 export const SHOWCASE_IMAGES: ShowcaseImage[] = [
-  { url: '77319_0.jpg', alt: '商業廣告' },
-  { url: '77329_0.jpg', alt: '海報設計' },
-  { url: '77369_0.jpg', alt: '水墨創作' },
-  { url: '77371_0.jpg', alt: '雜訊去除' },
-  { url: '77375_0.jpg', alt: '婚紗創作' },
-  { url: '77376_0.jpg', alt: '背景淨化' }
+  { url: '/77319_0.jpg', alt: '商業廣告' },
+  { url: '/77329_0.jpg', alt: '海報設計' },
+  { url: '/77369_0.jpg', alt: '水墨創作' },
+  { url: '/77371_0.jpg', alt: '雜訊去除' },
+  { url: '/77375_0.jpg', alt: '婚紗創作' },
+  { url: '/77376_0.jpg', alt: '背景淨化' }
 ];
 
 export const WHY_US = [

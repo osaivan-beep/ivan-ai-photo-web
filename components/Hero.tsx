@@ -1,8 +1,20 @@
 
-import React from 'react';
-import { PlayCircle, ChevronRight, Sparkles } from 'lucide-react';
+import React, { useState } from 'react';
+import { PlayCircle, ChevronRight, Sparkles, X } from 'lucide-react';
 
 const Hero: React.FC = () => {
+  const [showVideo, setShowVideo] = useState(false);
+
+  const openVideo = () => {
+    setShowVideo(true);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeVideo = () => {
+    setShowVideo(false);
+    document.body.style.overflow = 'auto';
+  };
+
   return (
     <div className="relative min-h-[70vh] flex items-center justify-center pt-20 overflow-hidden">
       {/* Dynamic Background Elements */}
@@ -39,7 +51,10 @@ const Hero: React.FC = () => {
             </span>
           </a>
           
-          <button className="flex items-center gap-3 text-white hover:text-slate-300 font-bold transition-all group">
+          <button 
+            onClick={openVideo}
+            className="flex items-center gap-3 text-white hover:text-slate-300 font-bold transition-all group"
+          >
             <div className="w-12 h-12 rounded-full border border-slate-700 flex items-center justify-center group-hover:border-slate-500 transition-colors">
               <PlayCircle className="text-white group-hover:scale-110 transition-transform" />
             </div>
@@ -47,6 +62,34 @@ const Hero: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* Video Modal Overlay */}
+      {showVideo && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 animate-in fade-in duration-300">
+          <div 
+            className="absolute inset-0 bg-slate-950/90 backdrop-blur-xl cursor-pointer"
+            onClick={closeVideo}
+          />
+          
+          <div className="relative w-full max-w-5xl aspect-video glass rounded-3xl border-slate-800 overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300">
+            <button 
+              onClick={closeVideo}
+              className="absolute top-4 right-4 z-10 p-2 bg-black/50 hover:bg-black text-white rounded-full transition-colors"
+            >
+              <X size={24} />
+            </button>
+            
+            <iframe 
+              className="w-full h-full"
+              src="https://www.youtube.com/embed/dYdcUUDYmqM?autoplay=1"
+              title="YouTube video player"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+            ></iframe>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
