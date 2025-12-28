@@ -12,9 +12,9 @@ const Navbar: React.FC = () => {
       setIsScrolled(window.scrollY > 20);
     };
     
-    // 設定預設音量為 50%
+    // 設定預設音量為 20%
     if (audioRef.current) {
-      audioRef.current.volume = 0.5;
+      audioRef.current.volume = 0.2;
     }
 
     window.addEventListener('scroll', handleScroll);
@@ -26,7 +26,7 @@ const Navbar: React.FC = () => {
     if (audioRef.current && isPlaying && !loadError) {
       audioRef.current.play()
         .then(() => {
-          console.log("音訊已由使用者互動喚醒，並以 50% 音量播放");
+          console.log("音訊已由使用者互動喚醒，並以 20% 音量播放");
           removeInteractionListeners();
         })
         .catch(err => {
@@ -64,8 +64,8 @@ const Navbar: React.FC = () => {
       setIsPlaying(false);
     } else {
       setIsPlaying(true);
-      // 確保切換回來時也是 50% 音量
-      audioRef.current.volume = 0.5;
+      // 確保切換回來時也是 20% 音量
+      audioRef.current.volume = 0.2;
       audioRef.current.play()
         .catch(err => console.error("手動啟動失敗:", err));
     }
@@ -98,7 +98,7 @@ const Navbar: React.FC = () => {
               }`}
             >
               <span className="text-[10px] font-black uppercase tracking-widest hidden sm:inline">
-                {loadError ? "Audio Error" : isPlaying ? "Music On (50%)" : "Music Off"}
+                {loadError ? "Audio Error" : isPlaying ? "Music On" : "Music Off"}
               </span>
               {isPlaying ? (
                 <Volume2 className="w-4 h-4 animate-pulse" />
@@ -113,7 +113,7 @@ const Navbar: React.FC = () => {
               src="./ivan-ai-photo-1.mp3"
               onCanPlayThrough={() => {
                 setLoadError(false);
-                if (audioRef.current) audioRef.current.volume = 0.5;
+                if (audioRef.current) audioRef.current.volume = 0.2;
               }}
               onError={() => {
                 console.error("找不到音訊檔案！請確認 ivan-ai-photo-1.mp3 已上傳至倉庫根目錄。");
