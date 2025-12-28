@@ -49,7 +49,7 @@ const Features: React.FC = () => {
                 {feature.subtitle}
               </p>
               
-              <p className="text-slate-400 text-sm leading-relaxed font-light line-clamp-3 group-hover:text-slate-300 transition-colors">
+              <p className="text-slate-400 text-sm leading-relaxed font-light line-clamp-3 group-hover:text-slate-300 transition-colors whitespace-pre-line">
                 {feature.description}
               </p>
 
@@ -96,7 +96,7 @@ const Features: React.FC = () => {
 
               <div className="w-20 h-1 bg-gradient-to-r from-purple-600 to-transparent mb-12" />
 
-              <p className="text-slate-300 text-lg md:text-xl font-light leading-relaxed max-w-2xl text-justify md:text-center">
+              <p className="text-slate-300 text-lg md:text-xl font-light leading-relaxed max-w-2xl text-left md:text-center whitespace-pre-line">
                 {selectedFeature.description}
               </p>
 
