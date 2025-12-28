@@ -1,4 +1,3 @@
-
 import { 
   Wand2, Sparkles, Video, ImagePlus, Ghost, Layers, 
   Palette, Brush, Square, Type, Stamp, PenTool 
@@ -109,13 +108,14 @@ export const PLANS: PricePlan[] = [
   }
 ];
 
+// 使用 Google Drive 直接連結格式 (uc?id=)
 export const SHOWCASE_IMAGES: ShowcaseImage[] = [
-  { url: '/77319_0.jpg', alt: '商業廣告' },
-  { url: '/77329_0.jpg', alt: '海報設計' },
-  { url: '/77369_0.jpg', alt: '水墨創作' },
-  { url: '/77371_0.jpg', alt: '雜訊去除' },
-  { url: '/77375_0.jpg', alt: '婚紗創作' },
-  { url: '/77376_0.jpg', alt: '背景淨化' }
+  { url: 'https://drive.google.com/uc?export=view&id=1FVguQ8AAv7VWgVC61biWphmfHtnd5YVt', alt: '商業廣告' },
+  { url: 'https://drive.google.com/uc?export=view&id=1HfYbTKQ6AK0vQucOuvPscMnWFyzY8qGk', alt: '海報設計' },
+  { url: 'https://drive.google.com/uc?export=view&id=1uDGhGG91WB4QaZ1GjThC4-aije_Zwmki', alt: '水墨創作' },
+  { url: 'https://drive.google.com/uc?export=view&id=1IhwqN6vkhA-HzpS0miHGt8ZtbJI-Srsd', alt: '雜訊去除' },
+  { url: 'https://drive.google.com/uc?export=view&id=1LcLICS8BAlrgExLijn4X3N5aVFjI-4yX', alt: '婚紗創作' },
+  { url: 'https://drive.google.com/uc?export=view&id=19gV6RsUMVEcDl3Z0Cs39m1G8jincio-8', alt: '背景淨化' }
 ];
 
 export const WHY_US = [
