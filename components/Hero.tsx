@@ -15,7 +15,7 @@ const Hero: React.FC = () => {
   };
 
   return (
-    <div className="relative flex flex-col items-center justify-start pt-4 pb-20 overflow-hidden">
+    <div className="relative flex flex-col items-center justify-start pt-4 pb-8 overflow-hidden">
       {/* Dynamic Background Elements */}
       <div className="absolute top-0 -left-20 w-96 h-96 bg-purple-600/10 rounded-full blur-[120px] animate-pulse" />
       <div className="absolute bottom-0 -right-20 w-96 h-96 bg-red-600/10 rounded-full blur-[120px] animate-pulse delay-700" />

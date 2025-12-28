@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { FEATURES } from '../constants';
 import { Feature } from '../types';
@@ -18,7 +17,7 @@ const Features: React.FC = () => {
   };
 
   return (
-    <section id="features" className="py-24 bg-slate-950 relative overflow-hidden">
+    <section id="features" className="pt-12 pb-24 bg-slate-950 relative overflow-hidden">
       <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-20">
           <h3 className="text-4xl md:text-5xl font-black text-white mb-6">十二大核心功能</h3>
