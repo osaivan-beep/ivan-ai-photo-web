@@ -53,7 +53,7 @@ const Hero: React.FC = () => {
             <div className="w-12 h-12 rounded-full border border-slate-700 flex items-center justify-center group-hover:border-slate-500 transition-colors">
               <PlayCircle className="text-white group-hover:scale-110 transition-transform" />
             </div>
-            觀看展示影片
+            軟體介紹影片
           </button>
         </div>
       </div>
