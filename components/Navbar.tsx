@@ -3,7 +3,7 @@ import { Camera, Volume2, VolumeX } from 'lucide-react';
 
 const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(true); // 預設改為 true
+  const [isPlaying, setIsPlaying] = useState(true); 
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
@@ -14,29 +14,46 @@ const Navbar: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // 處理預設播放
+  // 核心邏輯：處理瀏覽器自動播放限制，預設開啟
   useEffect(() => {
-    if (audioRef.current && isPlaying) {
-      const playPromise = audioRef.current.play();
-      if (playPromise !== undefined) {
-        playPromise.catch(error => {
-          // 瀏覽器通常會阻止無互動的自動播放，這是正常的
-          console.log("Auto-play was prevented by the browser. Waiting for user interaction.");
-          // 如果被阻止，我們可以選擇將狀態設回 false，或者維持 true 等待第一次互動觸發
-          // 這裡維持 true，讓 UI 顯示「音樂已開啟」的意圖
+    const startAudio = () => {
+      if (audioRef.current && isPlaying) {
+        audioRef.current.play().then(() => {
+          // 成功播放後移除監聽，避免重複執行
+          window.removeEventListener('click', startAudio);
+          window.removeEventListener('touchstart', startAudio);
+          window.removeEventListener('scroll', startAudio);
+        }).catch(err => {
+          // 靜音失敗通常是瀏覽器政策，繼續等待互動
+          console.debug("Autoplay waiting for interaction...");
         });
       }
-    }
-  }, []);
+    };
 
-  const toggleMusic = () => {
+    // 監聽多種用戶行為來觸發播放 (點擊、觸摸、滾動)
+    window.addEventListener('click', startAudio);
+    window.addEventListener('touchstart', startAudio);
+    window.addEventListener('scroll', startAudio);
+
+    // 嘗試初次播放
+    startAudio();
+
+    return () => {
+      window.removeEventListener('click', startAudio);
+      window.removeEventListener('touchstart', startAudio);
+      window.removeEventListener('scroll', startAudio);
+    };
+  }, [isPlaying]);
+
+  const toggleMusic = (e: React.MouseEvent) => {
+    e.stopPropagation(); 
     if (!audioRef.current) return;
     
     if (isPlaying) {
       audioRef.current.pause();
     } else {
       audioRef.current.play().catch(error => {
-        console.log("Audio play blocked by browser. User interaction required.", error);
+        console.log("Audio play blocked:", error);
       });
     }
     setIsPlaying(!isPlaying);
@@ -77,12 +94,11 @@ const Navbar: React.FC = () => {
               )}
             </button>
             
-            {/* Hidden Audio Element - 使用輕柔的環境背景音樂 */}
+            {/* Background Music Audio Element */}
             <audio 
               ref={audioRef}
-              autoPlay // 加入自動播放屬性
               loop 
-              src="https://assets.mixkit.co/music/preview/mixkit-tech-house-vibes-130.mp3"
+              src="https://lh3.googleusercontent.com/d/1M9EQz6y-O1defcxIdwZStVdB4ek4dRwz"
             />
           </div>
         </div>
