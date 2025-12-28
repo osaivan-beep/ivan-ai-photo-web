@@ -14,34 +14,42 @@ const Navbar: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // 核心邏輯：處理瀏覽器自動播放限制，預設開啟
+  // 強化版播放邏輯
   useEffect(() => {
     const startAudio = () => {
       if (audioRef.current && isPlaying) {
-        audioRef.current.play().then(() => {
-          // 成功播放後移除監聽，避免重複執行
-          window.removeEventListener('click', startAudio);
-          window.removeEventListener('touchstart', startAudio);
-          window.removeEventListener('scroll', startAudio);
-        }).catch(err => {
-          // 靜音失敗通常是瀏覽器政策，繼續等待互動
-          console.debug("Autoplay waiting for interaction...");
-        });
+        // 嘗試播放
+        const playPromise = audioRef.current.play();
+        
+        if (playPromise !== undefined) {
+          playPromise.then(() => {
+            // 播放成功後移除所有啟動監聽器
+            window.removeEventListener('click', startAudio);
+            window.removeEventListener('touchstart', startAudio);
+            window.removeEventListener('scroll', startAudio);
+            window.removeEventListener('mousedown', startAudio);
+          }).catch(err => {
+            // 失敗通常是瀏覽器政策，繼續等待下一次點擊
+            console.debug("Autoplay waiting for active user interaction...");
+          });
+        }
       }
     };
 
-    // 監聽多種用戶行為來觸發播放 (點擊、觸摸、滾動)
+    // 監聽更多用戶行為，只要用戶對網頁有任何動作就嘗試啟動音樂
     window.addEventListener('click', startAudio);
     window.addEventListener('touchstart', startAudio);
     window.addEventListener('scroll', startAudio);
+    window.addEventListener('mousedown', startAudio);
 
-    // 嘗試初次播放
+    // 初始嘗試
     startAudio();
 
     return () => {
       window.removeEventListener('click', startAudio);
       window.removeEventListener('touchstart', startAudio);
       window.removeEventListener('scroll', startAudio);
+      window.removeEventListener('mousedown', startAudio);
     };
   }, [isPlaying]);
 
@@ -51,12 +59,14 @@ const Navbar: React.FC = () => {
     
     if (isPlaying) {
       audioRef.current.pause();
+      setIsPlaying(false);
     } else {
-      audioRef.current.play().catch(error => {
+      audioRef.current.play().then(() => {
+        setIsPlaying(true);
+      }).catch(error => {
         console.log("Audio play blocked:", error);
       });
     }
-    setIsPlaying(!isPlaying);
   };
 
   return (
@@ -95,10 +105,12 @@ const Navbar: React.FC = () => {
             </button>
             
             {/* Background Music Audio Element */}
+            {/* 修正：使用 docs.google.com/uc?id= 格式來播放 Google Drive 音訊 */}
             <audio 
               ref={audioRef}
               loop 
-              src="https://lh3.googleusercontent.com/d/1M9EQz6y-O1defcxIdwZStVdB4ek4dRwz"
+              preload="auto"
+              src="https://docs.google.com/uc?id=1M9EQz6y-O1defcxIdwZStVdB4ek4dRwz"
             />
           </div>
         </div>
