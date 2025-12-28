@@ -3,7 +3,8 @@ import { Camera, Volume2, VolumeX } from 'lucide-react';
 
 const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false); // 預設先關閉，由點擊喚醒
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [loadError, setLoadError] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
@@ -14,41 +15,38 @@ const Navbar: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // 嘗試喚醒音訊的函數
-  const startAudio = () => {
-    if (audioRef.current && !isPlaying) {
+  // 嘗試啟動音訊
+  const attemptPlay = () => {
+    if (audioRef.current && !isPlaying && !loadError) {
       audioRef.current.play()
         .then(() => {
           setIsPlaying(true);
-          console.log("音訊播放成功");
-          // 播放成功後移除全域監聽
-          removeListeners();
+          console.log("GitHub 音訊播放成功");
+          removeInteractionListeners();
         })
         .catch(err => {
-          console.debug("瀏覽器限制自動播放，等待使用者互動...");
+          console.debug("等待有效使用者互動中...");
         });
     }
   };
 
-  const removeListeners = () => {
-    window.removeEventListener('click', startAudio);
-    window.removeEventListener('touchstart', startAudio);
-    window.removeEventListener('mousedown', startAudio);
-    window.removeEventListener('keydown', startAudio);
+  const removeInteractionListeners = () => {
+    window.removeEventListener('click', attemptPlay);
+    window.removeEventListener('touchstart', attemptPlay);
+    window.removeEventListener('mousedown', attemptPlay);
   };
 
   useEffect(() => {
-    // 監聽各種互動
-    window.addEventListener('click', startAudio);
-    window.addEventListener('touchstart', startAudio);
-    window.addEventListener('mousedown', startAudio);
-    window.addEventListener('keydown', startAudio);
+    // 監聽第一次點擊以解除瀏覽器自動播放限制
+    window.addEventListener('click', attemptPlay);
+    window.addEventListener('touchstart', attemptPlay);
+    window.addEventListener('mousedown', attemptPlay);
 
-    return () => removeListeners();
-  }, [isPlaying]);
+    return () => removeInteractionListeners();
+  }, [isPlaying, loadError]);
 
   const toggleMusic = (e: React.MouseEvent) => {
-    e.stopPropagation(); 
+    e.stopPropagation();
     if (!audioRef.current) return;
     
     if (isPlaying) {
@@ -57,7 +55,10 @@ const Navbar: React.FC = () => {
     } else {
       audioRef.current.play()
         .then(() => setIsPlaying(true))
-        .catch(err => console.error("手動啟動失敗:", err));
+        .catch(err => {
+          console.error("播放失敗:", err);
+          setLoadError(true);
+        });
     }
   };
 
@@ -75,19 +76,20 @@ const Navbar: React.FC = () => {
             </span>
           </div>
 
-          {/* Right Section: Music Control */}
+          {/* Music Control */}
           <div className="flex items-center">
             <button 
               onClick={toggleMusic}
               className={`flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all duration-300 ${
-                isPlaying 
-                ? 'bg-purple-500/20 border-purple-500/50 text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.4)]' 
-                : 'bg-slate-900/40 border-slate-800 text-slate-500 hover:text-slate-300'
+                loadError 
+                ? 'bg-red-500/20 border-red-500/50 text-red-400'
+                : isPlaying 
+                  ? 'bg-purple-500/20 border-purple-500/50 text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.4)]' 
+                  : 'bg-slate-900/40 border-slate-800 text-slate-500 hover:text-slate-300'
               }`}
-              title={isPlaying ? "關閉背景音樂" : "開啟背景音樂"}
             >
               <span className="text-[10px] font-black uppercase tracking-widest hidden sm:inline">
-                {isPlaying ? "Music On" : "Tap to Play"}
+                {loadError ? "Audio Error" : isPlaying ? "Music On" : "Tap to Play"}
               </span>
               {isPlaying ? (
                 <Volume2 className="w-4 h-4 animate-pulse" />
@@ -96,14 +98,19 @@ const Navbar: React.FC = () => {
               )}
             </button>
             
-            {/* Background Music Audio Element */}
-            {/* 使用 docs.google.com + export=download 加上 referrerPolicy 以獲得最佳相容性 */}
+            {/* 音訊來源改為相對路徑，請確保檔案已上傳至 GitHub 倉庫根目錄 */}
             <audio 
               ref={audioRef}
               loop 
-              preload="auto"
-              referrerPolicy="no-referrer"
-              src="https://docs.google.com/uc?export=download&id=1M9EQz6y-O1defcxIdwZStVdB4ek4dRwz"
+              src="./ivan-ai-photo-1.mp3"
+              onCanPlayThrough={() => setLoadError(false)}
+              onError={() => {
+                console.error("找不到音訊檔案！請確認 ivan-ai-photo-1.mp3 已上傳至倉庫根目錄。");
+                // 如果相對路徑失敗，嘗試使用 GitHub Raw 絕對路徑作為備援
+                if (audioRef.current && !audioRef.current.src.includes('raw.githubusercontent')) {
+                   audioRef.current.src = "https://raw.githubusercontent.com/osaivan-beep/ivan-ai-photo-web/main/ivan-ai-photo-1.mp3";
+                }
+              }}
             />
           </div>
         </div>
