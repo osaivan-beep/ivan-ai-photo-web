@@ -3,7 +3,7 @@ import { Camera, Volume2, VolumeX } from 'lucide-react';
 
 const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true); // 根據要求，預設一開始就打開
   const [loadError, setLoadError] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -15,17 +15,17 @@ const Navbar: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // 嘗試啟動音訊
+  // 嘗試啟動音訊 (處理瀏覽器自動播放限制)
   const attemptPlay = () => {
-    if (audioRef.current && !isPlaying && !loadError) {
+    // 只要處於「想要播放」的狀態 (isPlaying 為 true) 且尚未真正開始播放，就嘗試啟動
+    if (audioRef.current && isPlaying && !loadError) {
       audioRef.current.play()
         .then(() => {
-          setIsPlaying(true);
-          console.log("GitHub 音訊播放成功");
+          console.log("音訊已由使用者互動喚醒並開始播放");
           removeInteractionListeners();
         })
         .catch(err => {
-          console.debug("等待有效使用者互動中...");
+          console.debug("瀏覽器限制中，等待下一次有效互動...");
         });
     }
   };
@@ -34,13 +34,18 @@ const Navbar: React.FC = () => {
     window.removeEventListener('click', attemptPlay);
     window.removeEventListener('touchstart', attemptPlay);
     window.removeEventListener('mousedown', attemptPlay);
+    window.removeEventListener('scroll', attemptPlay);
   };
 
   useEffect(() => {
-    // 監聽第一次點擊以解除瀏覽器自動播放限制
+    // 預設一開始就監聽，直到成功播放為止
     window.addEventListener('click', attemptPlay);
     window.addEventListener('touchstart', attemptPlay);
     window.addEventListener('mousedown', attemptPlay);
+    window.addEventListener('scroll', attemptPlay); // 滾動也可以觸發播放
+
+    // 初始嘗試一次（如果瀏覽器允許）
+    attemptPlay();
 
     return () => removeInteractionListeners();
   }, [isPlaying, loadError]);
@@ -53,12 +58,10 @@ const Navbar: React.FC = () => {
       audioRef.current.pause();
       setIsPlaying(false);
     } else {
+      setIsPlaying(true);
+      // setIsPlaying 狀態更新後，useEffect 會重新掛載監聽器或直接在下一行嘗試
       audioRef.current.play()
-        .then(() => setIsPlaying(true))
-        .catch(err => {
-          console.error("播放失敗:", err);
-          setLoadError(true);
-        });
+        .catch(err => console.error("手動啟動失敗:", err));
     }
   };
 
@@ -89,7 +92,7 @@ const Navbar: React.FC = () => {
               }`}
             >
               <span className="text-[10px] font-black uppercase tracking-widest hidden sm:inline">
-                {loadError ? "Audio Error" : isPlaying ? "Music On" : "Tap to Play"}
+                {loadError ? "Audio Error" : isPlaying ? "Music On" : "Music Off"}
               </span>
               {isPlaying ? (
                 <Volume2 className="w-4 h-4 animate-pulse" />
@@ -98,7 +101,6 @@ const Navbar: React.FC = () => {
               )}
             </button>
             
-            {/* 音訊來源改為相對路徑，請確保檔案已上傳至 GitHub 倉庫根目錄 */}
             <audio 
               ref={audioRef}
               loop 
@@ -106,7 +108,6 @@ const Navbar: React.FC = () => {
               onCanPlayThrough={() => setLoadError(false)}
               onError={() => {
                 console.error("找不到音訊檔案！請確認 ivan-ai-photo-1.mp3 已上傳至倉庫根目錄。");
-                // 如果相對路徑失敗，嘗試使用 GitHub Raw 絕對路徑作為備援
                 if (audioRef.current && !audioRef.current.src.includes('raw.githubusercontent')) {
                    audioRef.current.src = "https://raw.githubusercontent.com/osaivan-beep/ivan-ai-photo-web/main/ivan-ai-photo-1.mp3";
                 }
