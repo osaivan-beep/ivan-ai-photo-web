@@ -108,14 +108,14 @@ export const PLANS: PricePlan[] = [
   }
 ];
 
-// 使用 Google Drive 直接連結格式 (uc?id=)
+// 使用更穩定的 lh3.googleusercontent.com 連結格式
 export const SHOWCASE_IMAGES: ShowcaseImage[] = [
-  { url: 'https://drive.google.com/uc?export=view&id=1FVguQ8AAv7VWgVC61biWphmfHtnd5YVt', alt: '商業廣告' },
-  { url: 'https://drive.google.com/uc?export=view&id=1HfYbTKQ6AK0vQucOuvPscMnWFyzY8qGk', alt: '海報設計' },
-  { url: 'https://drive.google.com/uc?export=view&id=1uDGhGG91WB4QaZ1GjThC4-aije_Zwmki', alt: '水墨創作' },
-  { url: 'https://drive.google.com/uc?export=view&id=1IhwqN6vkhA-HzpS0miHGt8ZtbJI-Srsd', alt: '雜訊去除' },
-  { url: 'https://drive.google.com/uc?export=view&id=1LcLICS8BAlrgExLijn4X3N5aVFjI-4yX', alt: '婚紗創作' },
-  { url: 'https://drive.google.com/uc?export=view&id=19gV6RsUMVEcDl3Z0Cs39m1G8jincio-8', alt: '背景淨化' }
+  { url: 'https://lh3.googleusercontent.com/d/1FVguQ8AAv7VWgVC61biWphmfHtnd5YVt', alt: '商業廣告' },
+  { url: 'https://lh3.googleusercontent.com/d/1HfYbTKQ6AK0vQucOuvPscMnWFyzY8qGk', alt: '海報設計' },
+  { url: 'https://lh3.googleusercontent.com/d/1uDGhGG91WB4QaZ1GjThC4-aije_Zwmki', alt: '水墨創作' },
+  { url: 'https://lh3.googleusercontent.com/d/1IhwqN6vkhA-HzpS0miHGt8ZtbJI-Srsd', alt: '雜訊去除' },
+  { url: 'https://lh3.googleusercontent.com/d/1LcLICS8BAlrgExLijn4X3N5aVFjI-4yX', alt: '婚紗創作' },
+  { url: 'https://lh3.googleusercontent.com/d/19gV6RsUMVEcDl3Z0Cs39m1G8jincio-8', alt: '背景淨化' }
 ];
 
 export const WHY_US = [
