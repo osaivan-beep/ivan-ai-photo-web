@@ -3,7 +3,7 @@ import { Camera, Volume2, VolumeX } from 'lucide-react';
 
 const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(true); // 根據要求，預設一開始就打開
+  const [isPlaying, setIsPlaying] = useState(true); // 預設一開始就開啟
   const [loadError, setLoadError] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -11,21 +11,26 @@ const Navbar: React.FC = () => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
+    
+    // 設定預設音量為 50%
+    if (audioRef.current) {
+      audioRef.current.volume = 0.5;
+    }
+
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   // 嘗試啟動音訊 (處理瀏覽器自動播放限制)
   const attemptPlay = () => {
-    // 只要處於「想要播放」的狀態 (isPlaying 為 true) 且尚未真正開始播放，就嘗試啟動
     if (audioRef.current && isPlaying && !loadError) {
       audioRef.current.play()
         .then(() => {
-          console.log("音訊已由使用者互動喚醒並開始播放");
+          console.log("音訊已由使用者互動喚醒，並以 50% 音量播放");
           removeInteractionListeners();
         })
         .catch(err => {
-          console.debug("瀏覽器限制中，等待下一次有效互動...");
+          console.debug("瀏覽器限制中，等待有效互動以啟動音樂...");
         });
     }
   };
@@ -42,9 +47,9 @@ const Navbar: React.FC = () => {
     window.addEventListener('click', attemptPlay);
     window.addEventListener('touchstart', attemptPlay);
     window.addEventListener('mousedown', attemptPlay);
-    window.addEventListener('scroll', attemptPlay); // 滾動也可以觸發播放
+    window.addEventListener('scroll', attemptPlay);
 
-    // 初始嘗試一次（如果瀏覽器允許）
+    // 初始嘗試一次（如果瀏覽器政策允許）
     attemptPlay();
 
     return () => removeInteractionListeners();
@@ -59,7 +64,8 @@ const Navbar: React.FC = () => {
       setIsPlaying(false);
     } else {
       setIsPlaying(true);
-      // setIsPlaying 狀態更新後，useEffect 會重新掛載監聽器或直接在下一行嘗試
+      // 確保切換回來時也是 50% 音量
+      audioRef.current.volume = 0.5;
       audioRef.current.play()
         .catch(err => console.error("手動啟動失敗:", err));
     }
@@ -92,7 +98,7 @@ const Navbar: React.FC = () => {
               }`}
             >
               <span className="text-[10px] font-black uppercase tracking-widest hidden sm:inline">
-                {loadError ? "Audio Error" : isPlaying ? "Music On" : "Music Off"}
+                {loadError ? "Audio Error" : isPlaying ? "Music On (50%)" : "Music Off"}
               </span>
               {isPlaying ? (
                 <Volume2 className="w-4 h-4 animate-pulse" />
@@ -105,7 +111,10 @@ const Navbar: React.FC = () => {
               ref={audioRef}
               loop 
               src="./ivan-ai-photo-1.mp3"
-              onCanPlayThrough={() => setLoadError(false)}
+              onCanPlayThrough={() => {
+                setLoadError(false);
+                if (audioRef.current) audioRef.current.volume = 0.5;
+              }}
               onError={() => {
                 console.error("找不到音訊檔案！請確認 ivan-ai-photo-1.mp3 已上傳至倉庫根目錄。");
                 if (audioRef.current && !audioRef.current.src.includes('raw.githubusercontent')) {
