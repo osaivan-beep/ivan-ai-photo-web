@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { PlayCircle, ChevronRight, Sparkles, X } from 'lucide-react';
+import { PlayCircle, ChevronRight, X } from 'lucide-react';
 
 const Hero: React.FC = () => {
   const [showVideo, setShowVideo] = useState(false);
@@ -16,17 +15,13 @@ const Hero: React.FC = () => {
   };
 
   return (
-    <div className="relative min-h-[70vh] flex items-center justify-center pt-20 overflow-hidden">
+    <div className="relative flex flex-col items-center justify-start pt-4 pb-20 overflow-hidden">
       {/* Dynamic Background Elements */}
-      <div className="absolute top-1/4 -left-20 w-96 h-96 bg-purple-600/20 rounded-full blur-[120px] animate-pulse" />
-      <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-red-600/20 rounded-full blur-[120px] animate-pulse delay-700" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_center,_transparent_0%,_rgba(2,6,23,0.8)_100%)] pointer-events-none" />
+      <div className="absolute top-0 -left-20 w-96 h-96 bg-purple-600/10 rounded-full blur-[120px] animate-pulse" />
+      <div className="absolute bottom-0 -right-20 w-96 h-96 bg-red-600/10 rounded-full blur-[120px] animate-pulse delay-700" />
 
       <div className="container mx-auto px-4 relative z-10 text-center">
-        <div className="inline-flex items-center gap-2 glass px-4 py-2 rounded-full text-xs font-bold text-indigo-300 mb-8 border-indigo-500/30 animate-bounce">
-          <Sparkles size={14} className="text-indigo-400" />
-          從 0 到 1 的憑空創造，到精雕細琢的專業後製
-        </div>
+        {/* 「從 0 到 1...」標籤已根據要求移除 */}
         
         <h1 className="text-5xl md:text-8xl font-black text-white mb-6 leading-tight tracking-tight">
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-indigo-400 to-red-400">

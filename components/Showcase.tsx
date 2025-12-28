@@ -3,10 +3,10 @@ import { SHOWCASE_IMAGES } from '../constants';
 
 const Showcase: React.FC = () => {
   return (
-    <section id="showcase" className="pt-32 pb-12 bg-slate-950">
+    <section id="showcase" className="pt-32 pb-2 bg-slate-950">
       {/* 標題與 Artistic Gallery 文字已根據要求移除 */}
       
-      <div className="relative w-full overflow-hidden py-10">
+      <div className="relative w-full overflow-hidden py-4">
         <div className="animate-marquee flex gap-8 whitespace-nowrap">
           {[...SHOWCASE_IMAGES, ...SHOWCASE_IMAGES].map((img, idx) => (
             <div 
