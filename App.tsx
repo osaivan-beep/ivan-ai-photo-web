@@ -11,9 +11,10 @@ const App: React.FC = () => {
     <div className="bg-slate-950 text-slate-200">
       <Navbar />
       <main>
+        {/* 將作品展示移至最頂端 */}
+        <Showcase />
         <Hero />
         <Features />
-        <Showcase />
         <Pricing />
       </main>
       <Footer />
