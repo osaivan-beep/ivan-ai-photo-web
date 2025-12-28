@@ -3,7 +3,7 @@ import { Camera, Volume2, VolumeX } from 'lucide-react';
 
 const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(true); 
+  const [isPlaying, setIsPlaying] = useState(false); // 預設先關閉，由點擊喚醒
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
@@ -14,43 +14,37 @@ const Navbar: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // 強化版播放邏輯
-  useEffect(() => {
-    const startAudio = () => {
-      if (audioRef.current && isPlaying) {
-        // 嘗試播放
-        const playPromise = audioRef.current.play();
-        
-        if (playPromise !== undefined) {
-          playPromise.then(() => {
-            // 播放成功後移除所有啟動監聽器
-            window.removeEventListener('click', startAudio);
-            window.removeEventListener('touchstart', startAudio);
-            window.removeEventListener('scroll', startAudio);
-            window.removeEventListener('mousedown', startAudio);
-          }).catch(err => {
-            // 失敗通常是瀏覽器政策，繼續等待下一次點擊
-            console.debug("Autoplay waiting for active user interaction...");
-          });
-        }
-      }
-    };
+  // 嘗試喚醒音訊的函數
+  const startAudio = () => {
+    if (audioRef.current && !isPlaying) {
+      audioRef.current.play()
+        .then(() => {
+          setIsPlaying(true);
+          console.log("音訊播放成功");
+          // 播放成功後移除全域監聽
+          removeListeners();
+        })
+        .catch(err => {
+          console.debug("瀏覽器限制自動播放，等待使用者互動...");
+        });
+    }
+  };
 
-    // 監聽更多用戶行為，只要用戶對網頁有任何動作就嘗試啟動音樂
+  const removeListeners = () => {
+    window.removeEventListener('click', startAudio);
+    window.removeEventListener('touchstart', startAudio);
+    window.removeEventListener('mousedown', startAudio);
+    window.removeEventListener('keydown', startAudio);
+  };
+
+  useEffect(() => {
+    // 監聽各種互動
     window.addEventListener('click', startAudio);
     window.addEventListener('touchstart', startAudio);
-    window.addEventListener('scroll', startAudio);
     window.addEventListener('mousedown', startAudio);
+    window.addEventListener('keydown', startAudio);
 
-    // 初始嘗試
-    startAudio();
-
-    return () => {
-      window.removeEventListener('click', startAudio);
-      window.removeEventListener('touchstart', startAudio);
-      window.removeEventListener('scroll', startAudio);
-      window.removeEventListener('mousedown', startAudio);
-    };
+    return () => removeListeners();
   }, [isPlaying]);
 
   const toggleMusic = (e: React.MouseEvent) => {
@@ -61,11 +55,9 @@ const Navbar: React.FC = () => {
       audioRef.current.pause();
       setIsPlaying(false);
     } else {
-      audioRef.current.play().then(() => {
-        setIsPlaying(true);
-      }).catch(error => {
-        console.log("Audio play blocked:", error);
-      });
+      audioRef.current.play()
+        .then(() => setIsPlaying(true))
+        .catch(err => console.error("手動啟動失敗:", err));
     }
   };
 
@@ -89,13 +81,13 @@ const Navbar: React.FC = () => {
               onClick={toggleMusic}
               className={`flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all duration-300 ${
                 isPlaying 
-                ? 'bg-purple-500/20 border-purple-500/50 text-purple-400' 
+                ? 'bg-purple-500/20 border-purple-500/50 text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.4)]' 
                 : 'bg-slate-900/40 border-slate-800 text-slate-500 hover:text-slate-300'
               }`}
               title={isPlaying ? "關閉背景音樂" : "開啟背景音樂"}
             >
               <span className="text-[10px] font-black uppercase tracking-widest hidden sm:inline">
-                {isPlaying ? "Music On" : "Music Off"}
+                {isPlaying ? "Music On" : "Tap to Play"}
               </span>
               {isPlaying ? (
                 <Volume2 className="w-4 h-4 animate-pulse" />
@@ -105,12 +97,13 @@ const Navbar: React.FC = () => {
             </button>
             
             {/* Background Music Audio Element */}
-            {/* 修正：使用 docs.google.com/uc?id= 格式來播放 Google Drive 音訊 */}
+            {/* 使用 docs.google.com + export=download 加上 referrerPolicy 以獲得最佳相容性 */}
             <audio 
               ref={audioRef}
               loop 
               preload="auto"
-              src="https://docs.google.com/uc?id=1M9EQz6y-O1defcxIdwZStVdB4ek4dRwz"
+              referrerPolicy="no-referrer"
+              src="https://docs.google.com/uc?export=download&id=1M9EQz6y-O1defcxIdwZStVdB4ek4dRwz"
             />
           </div>
         </div>
