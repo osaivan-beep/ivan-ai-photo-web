@@ -12,9 +12,9 @@ const Navbar: React.FC = () => {
       setIsScrolled(window.scrollY > 20);
     };
     
-    // 設定預設音量為 10% (0.1)
+    // 設定預設音量為 5% (0.05)
     if (audioRef.current) {
-      audioRef.current.volume = 0.1;
+      audioRef.current.volume = 0.05;
     }
 
     window.addEventListener('scroll', handleScroll);
@@ -26,7 +26,7 @@ const Navbar: React.FC = () => {
     if (audioRef.current && isPlaying && !loadError) {
       audioRef.current.play()
         .then(() => {
-          console.log("音訊已由使用者互動喚醒，並以 10% 音量播放");
+          console.log("音訊已由使用者互動喚醒，並以 5% 音量播放");
           removeInteractionListeners();
         })
         .catch(err => {
@@ -64,8 +64,8 @@ const Navbar: React.FC = () => {
       setIsPlaying(false);
     } else {
       setIsPlaying(true);
-      // 確保切換回來時也是 10% 音量
-      audioRef.current.volume = 0.1;
+      // 確保切換回來時也是 5% 音量
+      audioRef.current.volume = 0.05;
       audioRef.current.play()
         .catch(err => console.error("手動啟動失敗:", err));
     }
@@ -113,7 +113,7 @@ const Navbar: React.FC = () => {
               src="./ivan-ai-photo-1.mp3"
               onCanPlayThrough={() => {
                 setLoadError(false);
-                if (audioRef.current) audioRef.current.volume = 0.1;
+                if (audioRef.current) audioRef.current.volume = 0.05;
               }}
               onError={() => {
                 console.error("找不到音訊檔案！請確認 ivan-ai-photo-1.mp3 已上傳至倉庫根目錄。");
